@@ -18,6 +18,24 @@ app.get('/sensor', (req, res) => {
   });
 });
 
+app.get('/sensor/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    res.status(404).send();
+  }
+
+  Sensor.findById(id).then((sensor) => {
+    if (!sensor) {
+      res.status(404).send();
+    }
+
+    res.status(200).send({sensor});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
 app.post('/sensor', (req, res) => {
   var sensor = new Sensor({
     cars: req.body.cars
