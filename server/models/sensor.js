@@ -1,9 +1,13 @@
 var mongoose = require('mongoose');
 
 var Sensor = mongoose.model('Sensor', {
+  id: {
+    type: Number,
+    required: true
+  },
   cars: {
     type: Number,
-    required: true,
+    required: true
   },
   lastUpdated: {
     type: Number,

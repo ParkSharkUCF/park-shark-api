@@ -22,11 +22,7 @@ app.get('/sensor', (req, res) => {
 app.get('/sensor/:id', (req, res) => {
   var id = req.params.id;
 
-  if (!ObjectID.isValid(id)) {
-    res.status(404).send();
-  }
-
-  Sensor.findById(id).then((sensor) => {
+  Sensor.find({ id: id }).then((sensor) => {
     if (!sensor) {
       res.status(404).send();
     }
@@ -38,9 +34,8 @@ app.get('/sensor/:id', (req, res) => {
 });
 
 app.post('/sensor', (req, res) => {
-  var sensor = new Sensor({
-    cars: req.body.cars
-  });
+  var body = _.pick(req.body, ['id', 'cars', 'lastUpdated']);
+  var sensor = new Sensor(body);
 
   sensor.save().then((doc) => {
     res.status(200).send(doc);
@@ -53,18 +48,21 @@ app.patch('/sensor/:id', (req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ['cars', 'lastUpdated']);
 
-  if (!ObjectID.isValid(id)) {
-    return res.statis(404).send();
-  }
-
-  Sensor.findByIdAndUpdate(id, {$set: body}, {new: true}).then((sensor) => {
-    if(!sensor) {
+  Sensor.findOneAndUpdate({ id: id }, {$set: body}, {new: true}).then((sensor) => {
+    if (!sensor) {
       return res.status(404).send();
     }
 
     res.status(200).send({sensor});
   }).catch((e) => {
     res.status(400).send();
+  });
+});
+
+// deletes everything :o
+app.delete('/sensor', (req, res) => {
+  Sensor.remove({}).then(() => {
+    res.status(200).send();
   });
 });
 
