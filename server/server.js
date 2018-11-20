@@ -4,12 +4,21 @@ const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose');
-var {Sensor} = require('./models/sensor')
+var {Sensor} = require('./models/sensor');
+var {Garage} = require('./models/garage');
 
 var app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+
+app.get('/garage', (req, res) => {
+  Garage.find().then((garages) => {
+    res.send({garages});
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
 
 app.get('/sensor', (req, res) => {
   Sensor.find().then((sensors) => {
@@ -33,9 +42,29 @@ app.get('/sensor/:id', (req, res) => {
   });
 });
 
+app.post('/garage', (req, res) => {
+  var body = _.pick(req.body, ['name', 'sensors']);
+  var garage = new Garage(body);
+
+  garage.save().then((doc) => {
+    res.status(200).send(doc);
+  }).catch((e) => {
+    res.staus(400).send(e);
+  });
+});
+
 app.post('/sensor', (req, res) => {
-  var body = _.pick(req.body, ['id', 'cars', 'lastUpdated']);
+  var body = _.pick(req.body, ['id', 'garage', 'cars', 'lastUpdated']);
   var sensor = new Sensor(body);
+
+  Garage.findOneAndUpdate({ name: body['garage']}, { $push: { sensors: body['id']} }, {new: true}).then((garage) => {
+    if (!garage) {
+      var garage = new Garage({ name: body['garage'], sensors: [body['id']] });
+      garage.save();
+    }
+  }).catch((e) => {
+    res.status(400).send();
+  });
 
   sensor.save().then((doc) => {
     res.status(200).send(doc);
@@ -59,10 +88,16 @@ app.patch('/sensor/:id', (req, res) => {
   });
 });
 
-// deletes everything :o
+// these delete everything :o
 app.delete('/sensor', (req, res) => {
   Sensor.remove({}).then(() => {
     res.status(200).send();
+  });
+});
+
+app.delete('/garage', (req, res) => {
+  Garage.remove({}).then(() => {
+      res.status(200).send();
   });
 });
 
