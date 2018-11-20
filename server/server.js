@@ -54,7 +54,7 @@ app.post('/garage', (req, res) => {
 });
 
 app.post('/sensor', (req, res) => {
-  var body = _.pick(req.body, ['id', 'garage', 'cars', 'lastUpdated']);
+  var body = _.pick(req.body, ['id', 'garage', 'cars', 'lastUpdated', 'spots']);
   var sensor = new Sensor(body);
 
   Garage.findOneAndUpdate({ name: body['garage']}, { $push: { sensors: body['id']} }, {new: true}).then((garage) => {
@@ -75,7 +75,7 @@ app.post('/sensor', (req, res) => {
 
 app.patch('/sensor/:id', (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['cars', 'lastUpdated']);
+  var body = _.pick(req.body, ['cars', 'lastUpdated', 'spots']);
 
   Sensor.findOneAndUpdate({ id: id }, {$set: body}, {new: true}).then((sensor) => {
     if (!sensor) {

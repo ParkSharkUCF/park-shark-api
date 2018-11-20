@@ -9,6 +9,9 @@ var Sensor = mongoose.model('Sensor', {
     type: String,
     required: true
   },
+  spots: {
+    type: Array
+  },
   cars: {
     type: Number,
     required: true
