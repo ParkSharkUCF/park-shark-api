@@ -50,13 +50,13 @@ app.get('/sensor/:id', (req, res) => {
 });
 
 app.post('/garage', (req, res) => {
-  var body = _.pick(req.body, ['name', 'sensors']);
+  var body = _.pick(req.body, ['name', 'sensors', 'totalSpots']);
   var garage = new Garage(body);
 
   garage.save().then((doc) => {
     res.status(200).send(doc);
   }).catch((e) => {
-    res.staus(400).send(e);
+    res.status(400).send(e);
   });
 });
 
@@ -64,7 +64,7 @@ app.post('/sensor', (req, res) => {
   var body = _.pick(req.body, ['id', 'garage', 'cars', 'lastUpdated', 'spots']);
   var sensor = new Sensor(body);
 
-  Garage.findOneAndUpdate({ name: body['garage']}, { $push: { sensors: body['id']} }, {new: true}).then((garage) => {
+  Garage.findOneAndUpdate({ name: body['garage']}, { $addToSet: { sensors: body['id']} }, {new: true}).then((garage) => {
     if (!garage) {
       var garage = new Garage({ name: body['garage'], sensors: [body['id']] });
       garage.save();
@@ -82,7 +82,7 @@ app.post('/sensor', (req, res) => {
 
 app.patch('/sensor/:id', (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['cars', 'lastUpdated', 'spots']);
+  var body = _.pick(req.body, ['cars', 'lastUpdated', 'spots', 'spots']);
 
   Sensor.findOneAndUpdate({ id: id }, {$set: body}, {new: true}).then((sensor) => {
     if (!sensor) {
