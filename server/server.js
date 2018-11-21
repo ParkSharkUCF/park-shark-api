@@ -60,6 +60,20 @@ app.post('/garage', (req, res) => {
   });
 });
 
+app.get('/garage/:name', (req, res) => {
+  var name = req.params.name;
+
+  Garage.find({ name: name }).then((garage) => {
+    if (!garage) {
+      res.status(404).send();
+    }
+
+    res.status(200).send({garage});
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
+
 app.post('/sensor', (req, res) => {
   var body = _.pick(req.body, ['id', 'garage', 'cars', 'lastUpdated', 'spots']);
   var sensor = new Sensor(body);
