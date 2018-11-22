@@ -124,16 +124,31 @@ app.patch('/garage/:name', (req, res) => {
   });
 });
 
-// these delete everything :o
+// this deletes everything :o
 app.delete('/sensor', (req, res) => {
   Sensor.remove({}).then(() => {
     res.status(200).send();
   });
 });
 
+// so does this :o
 app.delete('/garage', (req, res) => {
   Garage.remove({}).then(() => {
       res.status(200).send();
+  });
+});
+
+app.delete('/garage/:name', (req, res) => {
+  var name = req.params.name;
+
+  Garage.findOneAndRemove({ name: name }).then((garage) => {
+    if (!garage) {
+      res.status(404).send();
+    }
+
+    res.status(200).send({garage});
+  }).catch((e) => {
+    res.status(400).send();
   });
 });
 
