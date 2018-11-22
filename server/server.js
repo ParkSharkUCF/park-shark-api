@@ -96,7 +96,7 @@ app.post('/sensor', (req, res) => {
 
 app.patch('/sensor/:id', (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['cars', 'lastUpdated', 'spots', 'spots']);
+  var body = _.pick(req.body, ['cars', 'lastUpdated', 'spots']);
 
   Sensor.findOneAndUpdate({ id: id }, {$set: body}, {new: true}).then((sensor) => {
     if (!sensor) {
@@ -104,6 +104,21 @@ app.patch('/sensor/:id', (req, res) => {
     }
 
     res.status(200).send({sensor});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
+app.patch('/garage/:name', (req, res) => {
+  var name = req.params.name;
+  var body = _.pick(req.body, ['sensors', 'totalSpots']);
+
+  Garage.findOneAndUpdate({ name: name}, {$set: body}, {new: true}).then((garage) => {
+    if (!garage) {
+      return res.status(404).send();
+    }
+
+    res.status(200).send({garage});
   }).catch((e) => {
     res.status(400).send();
   });
