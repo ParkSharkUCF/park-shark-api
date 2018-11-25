@@ -96,7 +96,7 @@ app.post('/sensor', (req, res) => {
 
 app.patch('/sensor/:id', (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['cars', 'lastUpdated', 'spots']);
+  var body = _.pick(req.body, ['cars', 'lastUpdated', 'spots', 'batLevel']);
 
   Sensor.findOneAndUpdate({ id: id }, {$set: body}, {new: true}).then((sensor) => {
     if (!sensor) {

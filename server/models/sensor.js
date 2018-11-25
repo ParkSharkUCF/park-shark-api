@@ -17,6 +17,10 @@ var Sensor = mongoose.model('Sensor', {
     type: Number,
     required: true
   },
+  batLevel: {
+    type: Number,
+    default: 0
+  },
   lastUpdated: {
     type: Number,
     default: null
