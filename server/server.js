@@ -75,7 +75,7 @@ app.get('/garage/:name', (req, res) => {
 });
 
 app.post('/sensor', (req, res) => {
-  var body = _.pick(req.body, ['id', 'garage', 'cars', 'lastUpdated', 'spots']);
+  var body = _.pick(req.body, ['id', 'garage', 'floor', 'cars', 'lastUpdated', 'spots']);
   var sensor = new Sensor(body);
 
   Garage.findOneAndUpdate({ name: body['garage']}, { $addToSet: { sensors: body['id']} }, {new: true}).then((garage) => {

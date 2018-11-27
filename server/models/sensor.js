@@ -10,6 +10,10 @@ var Sensor = mongoose.model('Sensor', {
     type: String,
     required: true
   },
+  floor: {
+    type: Number,
+    default: 2
+  },
   spots: {
     type: Array
   },
