@@ -9,7 +9,7 @@ var Garage = mongoose.model('Garage', {
   enabled: {
     type: Number,
     default: 1
-  }.
+  },
   sensors: {
     type: Array
   },
