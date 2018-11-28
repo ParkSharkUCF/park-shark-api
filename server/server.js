@@ -111,7 +111,7 @@ app.patch('/sensor/:id', (req, res) => {
 
 app.patch('/garage/:name', (req, res) => {
   var name = req.params.name;
-  var body = _.pick(req.body, ['sensors', 'enabled']);
+  var body = _.pick(req.body, ['sensors', 'enabled', 'totalSpots']);
 
   Garage.findOneAndUpdate({ name: name}, {$set: body}, {new: true}).then((garage) => {
     if (!garage) {
